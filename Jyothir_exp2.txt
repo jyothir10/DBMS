@@ -1,0 +1,245 @@
+mysql> select * from Book;
++---------+------+--------------+--------------+----------------+-------------+----------+--------+
+| book_id | MRP  | publisher_id | title        | published_date | language_id | status   | volume |
++---------+------+--------------+--------------+----------------+-------------+----------+--------+
+|       1 |  500 |            2 | Keralam      | 2012-05-25     |           2 | issued   |    100 |
+|       2 |  300 |            1 | Aarachar     | 2020-08-21     |           2 | issued   |    200 |
+|       4 |  200 |            2 | Heaven       | 2005-05-25     |           1 | issued   |    400 |
+|      10 |  100 |            1 | My life      | 2003-03-20     |           1 | issued   |    300 |
+|      11 |  100 |            1 | The shallows | 2003-03-20     |           1 | issued   |    300 |
+|     101 |  600 |            2 | Journey      | 2018-07-22     |           2 | issued   |    300 |
+|     123 |  200 |            1 | Journey      | 2021-02-05     |           1 | returned |     20 |
++---------+------+--------------+--------------+----------------+-------------+----------+--------+
+7 rows in set (0.00 sec)
+
+mysql> select * from language;
++-------------+-----------+
+| language_id | name      |
++-------------+-----------+
+|           1 | English   |
+|           2 | Malayalam |
++-------------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from Publisher;
++--------------+------------+---------+
+| publisher_id | name       | address |
++--------------+------------+---------+
+|            1 | John smith | US      |
+|            2 | Smith      | IND     |
++--------------+------------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select * from Book_author;
++---------+-----------+
+| book_id | author_id |
++---------+-----------+
+|      10 |         1 |
+|      11 |         1 |
+|       1 |         5 |
+|       1 |        10 |
+|     123 |        10 |
++---------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Book_issue;
++----------+---------+------------------------+--------------+-----------+------------+
+| issue_id | book_id | expected_dateof_return | Dateof_issue | member_id | status     |
++----------+---------+------------------------+--------------+-----------+------------+
+|        1 |     123 | 2021-10-05             | 2019-06-12   |        99 | unreturned |
+|        3 |       1 | 2022-01-05             | 2019-06-12   |        99 | issued     |
+|        4 |       2 | 2022-04-15             | 2019-04-15   |        15 | issued     |
+|        5 |     101 | 2021-11-22             | 2020-12-15   |        10 | issued     |
+|        7 |     123 | 2022-01-09             | 2019-06-02   |        99 | issued     |
+|        8 |       4 | 2021-12-30             | 2019-04-22   |        99 | issued     |
+|        9 |      10 | 2021-11-05             | 2019-06-12   |        99 | returned   |
+|       11 |      11 | 2021-11-05             | 2019-06-12   |        99 | unreturned |
++----------+---------+------------------------+--------------+-----------+------------+
+8 rows in set (0.00 sec)
+
+mysql> select * from Book_return;
++----------+----------------------+----------+---------+
+| issue_id | actual_dateof_return | lateDays | latefee |
++----------+----------------------+----------+---------+
+|        1 | 2021-11-14           |       25 |     400 |
+|        3 | 2021-12-15           |       13 |     100 |
+|        4 | 2022-11-14           |       45 |     200 |
+|        7 | 2021-05-03           |       34 |     500 |
+|        8 | 2021-12-01           |       19 |     150 |
+|        9 | 2021-01-14           |        0 |       0 |
++----------+----------------------+----------+---------+
+6 rows in set (0.00 sec)
+
+mysql> select * from Author;
++-----------+-----------+--------------+-----------+---------------------+
+| author_id | phone_no  | name         | status    | email               |
++-----------+-----------+--------------+-----------+---------------------+
+|         1 | 999559955 | John Wiley   | done      | johnwiley@gmail.com |
+|         5 |    345654 | Peter Parker | Published | peter@gmail.com     |
+|        10 |    555555 | Steve rogers | issued    | steve@gmail.com     |
++-----------+-----------+--------------+-----------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from member;
++-----------+--------+-------------+---------+----------+------------------+----------------+--------+
+| member_id | name   | branch_code | roll_no | phone_no | email_id         | dateof_joining | status |
++-----------+--------+-------------+---------+----------+------------------+----------------+--------+
+|         1 | Arjun  |         954 |      13 |  2343456 | arjun@gmail.com  | 2021-02-25     | ok     |
+|        10 | Kiran  |         444 |      12 | 48756834 | kiran@gmail.com  | 2020-10-15     | issued |
+|        15 | Arun   |         999 |      34 |  7777888 | arun@gmail.com   | 2019-11-29     | ok     |
+|        99 | george |          77 |       3 |   888888 | george@gmail.com | 2020-05-08     | issued |
++-----------+--------+-------------+---------+----------+------------------+----------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select * from Latefee_rule;
++------------+------------+--------+
+| fromdays   | todays     | amount |
++------------+------------+--------+
+| 2020-11-27 | 2021-12-30 |    500 |
++------------+------------+--------+
+1 row in set (0.00 sec)
+
+
+1)
+mysql> SELECT count(*) AS NUMBER_OF_BOOKS FROM
+    -> Book_author NATURAL JOIN Author
+    -> WHERE name = 'John Wiley';
++-----------------+
+| NUMBER_OF_BOOKS |
++-----------------+
+|               2 |
++-----------------+
+1 row in set (0.00 sec)
+
+
+2)
+mysql> SELECT name,COUNT(*) AS NO_OF_BOOKS
+    -> FROM Publisher NATURAL JOIN Book
+    -> GROUP BY name;
++------------+-------------+
+| name       | NO_OF_BOOKS |
++------------+-------------+
+| John smith |           4 |
+| Smith      |           3 |
++------------+-------------+
+2 rows in set (0.00 sec)
+
+
+3)
+mysql> SELECT name from Author
+    -> WHERE author_id IN (
+    -> SELECT DISTINCT b1.author_id from
+    -> Book_author b1 INNER JOIN Book_author b2
+    -> ON b1.book_id = b2.book_id
+    -> WHERE b1.author_id != b2.author_id);
++--------------+
+| name         |
++--------------+
+| Peter Parker |
+| Steve rogers |
++--------------+
+2 rows in set (0.03 sec)
+
+
+4)
+mysql> SELECT title
+    -> FROM Book INNER JOIN Book_issue
+    -> ON Book.book_id = Book_issue.book_id
+    -> WHERE Book_issue.status IN (SELECT status
+    -> FROM Book_issue
+    -> WHERE status = 'unreturned');
++--------------+
+| title        |
++--------------+
+| Journey      |
+| The shallows |
++--------------+
+2 rows in set (0.00 sec)
+
+
+5)
+mysql> SELECT name from member
+    -> WHERE member_id IN 
+    -> (SELECT DISTINCT member_id 
+    -> FROM Book NATURAL JOIN Book_issue 
+    -> WHERE language_id IN 
+    -> (SELECT language_id from language 
+    -> WHERE name = 'Malayalam'));
++--------+
+| name   |
++--------+
+| Kiran  |
+| Arun   |
+| george |
++--------+
+2 rows in set (0.00 sec)
+
+6)
+mysql> SELECT SUM(latefee) AS CurrentMonthFine 
+    -> FROM Book_return 
+    -> WHERE MONTH(actual_dateof_return) = MONTH(CURDATE());
++------------------+
+| CurrentMonthFine |
++------------------+
+|              250 |
++------------------+
+1 row in set (0.02 sec)
+
+mysql> SELECT SUM(latefee) AS CurrentQuarterFine 
+    -> FROM Book_return
+    -> WHERE QUARTER(actual_dateof_return) = QUARTER(CURDATE());
++--------------------+
+| CurrentQuarterFine |
++--------------------+
+|                850 |
++--------------------+
+1 row in set (0.00 sec)
+
+7)
+mysql> SELECT DISTINCT name
+    -> FROM Book_issue INNER JOIN member
+    -> ON Book_issue.member_id = member.member_id
+    -> WHERE expected_dateof_return < CURDATE();
+
+mysql> SELECT name 
+    -> FROM member 
+    -> WHERE member_id IN 
+    -> (SELECT DISTINCT member_id
+    -> FROM Book_issue INNER JOIN Book_return
+    -> ON Book_issue.issue_id = Book_return.issue_id
+    -> WHERE lateDays != 0);
+
++--------+
+| name   |
++--------+
+| Kiran  |
+| george |
++--------+
+2 rows in set (0.00 sec)
+
+
+8)
+considering fee for 1 day as 5/-
+mysql> SELECT book_id,datediff(CURDATE(),expected_dateof_return)*5 AS Fee_till_today
+    -> FROM Book_issue
+    -> WHERE datediff(CURDATE(),expected_dateof_return) > 0;
++---------+----------------+
+| book_id | Fee_till_today |
++---------+----------------+
+|     123 |            360 |
+|     101 |            120 |
+|      10 |            205 |
+|      11 |            205 |
++---------+----------------+
+4 rows in set (0.00 sec)
+
+9)
+mysql> SELECT name FROM member
+    ->  WHERE (dateof_joining > '2021-01-01' AND status = 'ok');
++-------+
+| name  |
++-------+
+| Arjun |
++-------+
+1 row in set (0.00 sec)
+
